@@ -1,0 +1,12 @@
+language: java
+branches:
+  only:
+  - master
+jdk:
+- oraclejdk8
+script:
+- mvn verify
+install: echo "We believe in Maven."
+cache:
+  directories:
+  - $HOME/.m2

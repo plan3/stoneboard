@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Milestones</title>
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.0/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/assets/spinner.css">
+    <link rel="stylesheet" type="text/css" href="/assets/nodes.css">
+    <link rel="stylesheet" type="text/css" href="/assets/style.css">
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="navbar navbar-default" role="navigation">
+        <div class="navbar-header">
+          <span class="navbar-brand">Milestones with open issues</span>
+        </div>
+        <div class="navbar-collapse collapse">
+          <p class="navbar-text navbar-right">
+            <a href="#" onclick="selectOrg()">Select organization</a>
+            <span id="current-org"></span>
+            <a href="https://github.com/{{user.login}}" target="_blank">
+              <img src="{{user.avatarUrl}}" height="30">
+            </a>
+          </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="spinner" id="milestones-spinner">
+          <div class="rect1"></div>
+          <div class="rect2"></div>
+          <div class="rect3"></div>
+          <div class="rect4"></div>
+          <div class="rect5"></div>
+          <p>Fetching milestones...</p>
+        </div>
+        <svg>
+          <g transform="translate(20,20)"/>
+        </svg>
+      </div>
+    </div>
+    <div class="modal fade" data-keyboard="false" data-backdrop="static" id="orgModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Select organization</h4>
+          </div>
+          <div class="modal-body">
+            <div class="list-group">
+              {{#repositories}}
+                  <a href="#" onclick="load('{{.}}')" class="list-group-item organization">
+                    <span>
+                      {{.}}
+                    </span>
+                  </a>
+              {{/repositories}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.2/d3.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="//cpettitt.github.io/project/dagre-d3/v0.2.9/dagre-d3.min.js"></script>
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script type="text/javascript" src="/assets/app.js"></script>
+  </body>
+</html>

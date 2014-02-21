@@ -1,0 +1,52 @@
+.edgeLabel rect {
+  fill: #fff;
+}
+
+.edgePath {
+  stroke: #666;
+  stroke-width: 1.5px;
+  fill: none;
+}
+
+.milestone {
+  padding: 8px;
+  overflow: hidden;
+  border: 2px solid #666;
+  border-radius: 3px;
+}
+.milestone.has-assignees {
+  padding-bottom: 0;
+}
+
+.edit, .milestone span, .milestone span a {
+  color: #666;
+  white-space: nowrap;
+}
+
+.edit {
+  margin-left: 5px;
+}
+
+.milestone a {
+  white-space: nowrap;
+}
+
+.milestone span {
+  font-size: 11px;
+}
+
+.assignees {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  text-align: right;
+}
+
+.assignees li {
+  display: inline;
+  margin-right: 2px;
+}
+
+.assignees img {
+  height: 28px;
+}
