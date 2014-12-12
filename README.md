@@ -1,6 +1,4 @@
-# Milestones Visualizer
-
-Proof of concept for a GitHub milestone visualizer. 
+# Stoneboard - A GitHub milestone visualizer
 
 It iterates through all projects a user has access to, in the configured organisations, and fetches milestones and issues. These are then displayed in a graph visualising the milestone relationships.
 
@@ -9,6 +7,8 @@ Specify milestones dependencies by adding this to a milestone description. For e
 `[blah/gh-dashboard-test-three/3 blah/gh-dashboard-test-three/2]`
 
 This tells us the milestone has two dependencies; milestone 2 and 3 in the repo “gh-dashboard-test-three” in the organisation “blah”.
+
+![example](stoneboard-example.png)
 
 ## Local development
 
