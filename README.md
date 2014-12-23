@@ -12,6 +12,10 @@ This tells us the milestone has two dependencies; milestone 2 and 3 in the repo 
 
 ## Local development
 
+### Prerequisites
+
+You will need Java 8 and Maven 3 installed and "properly" setup (in your path etc).
+
 ### Setup
 
 Create a file called .env with the variables listed beneath _Configuration_ below.
