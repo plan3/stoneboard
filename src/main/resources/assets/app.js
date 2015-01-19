@@ -120,15 +120,6 @@ var tree = function(milestones) {
       removeUnresolvedDependencies();
       setupChildren();
       graph = buildGraph(nodes);
-      graph.nodes.sort(function(a, b) {
-        if(a.childrenSize < b.childrenSize) {
-          return -1;
-        }
-        if(a.childrenSize > b.childrenSize) {
-          return 1;
-        }
-        return 0;
-      });
       return graph;
     }
   };
