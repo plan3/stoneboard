@@ -39,7 +39,7 @@ var tree = function(milestones) {
       return node.slug === slug;
     });
     return result[0];
-  };
+  }
 
   function removeUnresolvedDependencies() {
     nodes.forEach(function(node) {
@@ -50,7 +50,7 @@ var tree = function(milestones) {
         }
       });
     });
-  };
+  }
 
   function setupChildren() {
     var roots = nodes.filter(function(node) {
@@ -62,7 +62,7 @@ var tree = function(milestones) {
     roots.forEach(function(rootNode) {
       findChildren(rootNode);
     });
-  };
+  }
 
   function findChildren(parent) {
     parent.children = nodes.filter(function(node) {
@@ -71,7 +71,7 @@ var tree = function(milestones) {
       }
     });
     return parent;
-  };
+  }
 
   function buildGraph(nodes, accumulator) {
     if(accumulator === undefined) {
@@ -207,7 +207,7 @@ var renderer = function(graphData) {
       graphRenderer.layout(layout).run(graph, svgGroup);
     }
   }
-}
+};
 
 var load = function(slug) {
   var org = slug.split("/")[0];
@@ -225,12 +225,12 @@ var load = function(slug) {
   }).fail(function() {
     alert("There was a problem with the request.");
   });
-}
+};
 
 var selectOrg = function() {
   $("#orgModal").modal("show");
   $(".modal-dialog").css("z-index", "1500");
-}
+};
 
 $(document).ready(function() {
   if($.cookie("slug")) {
