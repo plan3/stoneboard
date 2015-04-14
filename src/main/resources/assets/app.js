@@ -224,6 +224,30 @@ var load = function(slug) {
     d3.selectAll(".milestone a").on("mousedown", function(){
       d3.event.stopPropagation();
     });
+
+    // Add zoom behavior: see https://github.com/andyperlitch/dagre-d3/blob/issue%2315/demo/interactive-demo.html#L173-L192
+    var zoom = d3.behavior.zoom();
+    var svg = d3.select("svg");
+    var lastRegistered = {
+      translate: zoom.translate(),
+      scale: zoom.scale()
+    };
+    zoom.on("zoom", function() {
+      var ev = d3.event;
+      if (!ev.sourceEvent.altKey && ev.sourceEvent.type === "wheel") {
+        var sev = ev.sourceEvent;
+        window.scrollBy(0, sev.deltaY);
+        zoom.translate(lastRegistered.translate);
+        zoom.scale(lastRegistered.scale);
+      } else {
+        lastRegistered.translate = ev.translate;
+        lastRegistered.scale = ev.scale;
+        svg.select("g")
+            .attr("transform", "translate(" + ev.translate + ") scale(" + ev.scale + ")");
+      }
+    });
+    d3.select("svg").call(zoom);
+
     $("#milestones-spinner").hide();
   }).fail(function() {
     alert("There was a problem with the request.");
