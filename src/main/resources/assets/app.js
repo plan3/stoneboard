@@ -221,6 +221,10 @@ var load = function(slug) {
     $("svg").show();
     graphData = tree(data).toGraph();
     renderer(graphData).render();
+    d3.selectAll(".milestone a").on("mousedown", function(item, index){
+      d3.event.stopPropagation();
+      console.log("mousedown", item, index);
+    });
     $("#milestones-spinner").hide();
   }).fail(function() {
     alert("There was a problem with the request.");
