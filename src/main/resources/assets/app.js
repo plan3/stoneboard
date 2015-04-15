@@ -211,7 +211,7 @@ var load = function(slug) {
   $("#current-org").html("(" + slug + ")");
   $.getJSON("/milestones/" + slug).done(function(data) {
     $("svg").show();
-    graphData = tree(data).toGraph();
+    var graphData = tree(data).toGraph();
     renderer(graphData).render();
     d3.selectAll(".milestone a").on("mousedown", function(){
       d3.event.stopPropagation();
