@@ -125,7 +125,6 @@ var renderer = function(graphData) {
   var graph = new dagreD3.Digraph(),
     svg = d3.select("svg"),
     svgGroup = d3.select("svg g"),
-    nodeHeight = 60,
     nodeSeparation = 10;
 
   function setGraphDimension() {
@@ -206,7 +205,6 @@ var renderer = function(graphData) {
 
 var load = function(slug) {
   var org = slug.split("/")[0];
-  var repo = slug.split("/")[1];
   $("#milestones-spinner").show();
   $("#orgModal").modal("hide");
   $("svg").hide();
