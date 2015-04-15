@@ -14,7 +14,7 @@ var TreeNode = function(attrs) {
   this.inTree = false;
 
   function extractDependencies(node) {
-    var matches = /\[(.+)\]/g.exec(node.description);
+    var matches = /\[(.+)]/g.exec(node.description);
     var dependencies = [];
     if(matches !== null) {
       dependencies = matches[1].split(/,| /);
