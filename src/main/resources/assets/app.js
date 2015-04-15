@@ -74,12 +74,8 @@ var tree = function(milestones) {
   }
 
   function buildGraph(nodes, accumulator) {
-    if(accumulator === undefined) {
-      var accumulator = {
-        nodes: [],
-        links: []
-      };
-    }
+    accumulator = accumulator || {nodes: [], links: []};
+
     nodes.forEach(function(node) {
       if(node.inTree === false) {
         accumulator.nodes.push({
