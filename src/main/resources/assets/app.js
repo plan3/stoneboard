@@ -126,7 +126,7 @@ var renderer = function(graphData) {
     svg = d3.select("svg"),
     svgGroup = d3.select("svg g"),
     nodeHeight = 60,
-    nodeSeperation = 10;
+    nodeSeparation = 10;
 
   function setGraphDimension() {
     svg.attr({
@@ -194,7 +194,7 @@ var renderer = function(graphData) {
     render: function() {
       var graphRenderer = new dagreD3.Renderer(),
         layout = dagreD3.layout()
-          .nodeSep(nodeSeperation)
+          .nodeSep(nodeSeparation)
           .rankDir("LR");
       setGraphDimension();
       addNodes();
