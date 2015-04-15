@@ -147,11 +147,11 @@ var renderer = function(graphData) {
 
   function nodeHtml(node) {
     var totalIssues = parseInt(node.openIssues)+parseInt(node.closedIssues);
-    var style = { class: "milestone " + (node.assignees.length > 0 ? "has-assignees" : "")};
+    var properties = { class: "milestone " + (node.assignees.length > 0 ? "has-assignees" : "")};
     if(node.progressPercentage > 0) {
-      style.css = {"background": "linear-gradient(to right, rgba(30,255,0, .4)" + node.progressPercentage + "%, white 0%)"};
+      properties.css = {"background": "linear-gradient(to right, rgba(30,255,0, .4)" + node.progressPercentage + "%, white 0%)"};
     }
-    var outer = $("<div/>", style);
+    var outer = $("<div/>", properties);
     $("<a/>", {
       href: node.url,
       html: node.title
