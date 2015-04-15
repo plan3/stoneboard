@@ -14,7 +14,7 @@ var TreeNode = function(attrs) {
   this.inTree = false;
 
   function extractDependencies(node) {
-    var matches = /\[(.+)\]/g.exec(node.description);
+    var matches = /\[(.+)]/g.exec(node.description);
     var dependencies = [];
     if(matches !== null) {
       dependencies = matches[1].split(/,| /);
@@ -39,7 +39,7 @@ var tree = function(milestones) {
       return node.slug === slug;
     });
     return result[0];
-  };
+  }
 
   function removeUnresolvedDependencies() {
     nodes.forEach(function(node) {
@@ -50,7 +50,7 @@ var tree = function(milestones) {
         }
       });
     });
-  };
+  }
 
   function setupChildren() {
     var roots = nodes.filter(function(node) {
@@ -62,7 +62,7 @@ var tree = function(milestones) {
     roots.forEach(function(rootNode) {
       findChildren(rootNode);
     });
-  };
+  }
 
   function findChildren(parent) {
     parent.children = nodes.filter(function(node) {
@@ -71,15 +71,11 @@ var tree = function(milestones) {
       }
     });
     return parent;
-  };
+  }
 
   function buildGraph(nodes, accumulator) {
-    if(accumulator === undefined) {
-      var accumulator = {
-        nodes: [],
-        links: []
-      };
-    }
+    accumulator = accumulator || {nodes: [], links: []};
+
     nodes.forEach(function(node) {
       if(node.inTree === false) {
         accumulator.nodes.push({
@@ -119,8 +115,7 @@ var tree = function(milestones) {
     toGraph: function() {
       removeUnresolvedDependencies();
       setupChildren();
-      graph = buildGraph(nodes);
-      return graph;
+      return buildGraph(nodes);
     }
   };
 };
@@ -129,8 +124,7 @@ var renderer = function(graphData) {
   var graph = new dagreD3.Digraph(),
     svg = d3.select("svg"),
     svgGroup = d3.select("svg g"),
-    nodeHeight = 60,
-    nodeSeperation = 10;
+    nodeSeparation = 10;
 
   function setGraphDimension() {
     svg.attr({
@@ -147,12 +141,11 @@ var renderer = function(graphData) {
 
   function nodeHtml(node) {
     var totalIssues = parseInt(node.openIssues)+parseInt(node.closedIssues);
-    var outer = $("<div/>", {
-      class: "milestone " + (node.assignees.length > 0 ? "has-assignees" : ""),
-      css: {
-        "background": "linear-gradient(to right, rgba(30,255,0, .4)" + node.progressPercentage + "%, white 0%)"
-      }
-    });
+    var properties = { class: "milestone " + (node.assignees.length > 0 ? "has-assignees" : "")};
+    if(node.progressPercentage > 0) {
+      properties.css = {"background": "linear-gradient(to right, rgba(30,255,0, .4)" + node.progressPercentage + "%, white 0%)"};
+    }
+    var outer = $("<div/>", properties);
     $("<a/>", {
       href: node.url,
       html: node.title
@@ -199,7 +192,7 @@ var renderer = function(graphData) {
     render: function() {
       var graphRenderer = new dagreD3.Renderer(),
         layout = dagreD3.layout()
-          .nodeSep(nodeSeperation)
+          .nodeSep(nodeSeparation)
           .rankDir("LR");
       setGraphDimension();
       addNodes();
@@ -207,11 +200,10 @@ var renderer = function(graphData) {
       graphRenderer.layout(layout).run(graph, svgGroup);
     }
   }
-}
+};
 
 var load = function(slug) {
   var org = slug.split("/")[0];
-  var repo = slug.split("/")[1];
   $("#milestones-spinner").show();
   $("#orgModal").modal("hide");
   $("svg").hide();
@@ -219,18 +211,45 @@ var load = function(slug) {
   $("#current-org").html("(" + slug + ")");
   $.getJSON("/milestones/" + slug).done(function(data) {
     $("svg").show();
-    graphData = tree(data).toGraph();
+    var graphData = tree(data).toGraph();
     renderer(graphData).render();
+    d3.selectAll(".milestone a").on("mousedown", function(){
+      d3.event.stopPropagation();
+    });
+
+    // Add zoom behavior: see https://github.com/andyperlitch/dagre-d3/blob/issue%2315/demo/interactive-demo.html#L173-L192
+    var zoom = d3.behavior.zoom();
+    var svg = d3.select("svg");
+    var lastRegistered = {
+      translate: zoom.translate(),
+      scale: zoom.scale()
+    };
+    zoom.on("zoom", function() {
+      var ev = d3.event;
+      if (!ev.sourceEvent.altKey && ev.sourceEvent.type === "wheel") {
+        var sev = ev.sourceEvent;
+        window.scrollBy(0, sev.deltaY);
+        zoom.translate(lastRegistered.translate);
+        zoom.scale(lastRegistered.scale);
+      } else {
+        lastRegistered.translate = ev.translate;
+        lastRegistered.scale = ev.scale;
+        svg.select("g")
+            .attr("transform", "translate(" + ev.translate + ") scale(" + ev.scale + ")");
+      }
+    });
+    d3.select("svg").call(zoom);
+
     $("#milestones-spinner").hide();
   }).fail(function() {
     alert("There was a problem with the request.");
   });
-}
+};
 
 var selectOrg = function() {
   $("#orgModal").modal("show");
   $(".modal-dialog").css("z-index", "1500");
-}
+};
 
 $(document).ready(function() {
   if($.cookie("slug")) {
