@@ -115,8 +115,7 @@ var tree = function(milestones) {
     toGraph: function() {
       removeUnresolvedDependencies();
       setupChildren();
-      graph = buildGraph(nodes);
-      return graph;
+      return buildGraph(nodes);
     }
   };
 };
