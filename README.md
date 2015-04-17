@@ -39,6 +39,7 @@ Config variables for local .env and Heroku app:
 ```
 GITHUB_CLIENT_ID=A-GITHUB-CLIENT-ID
 GITHUB_CLIENT_SECRET=A-GITHUB-CLIENT-SECRET
+GITHUB_HOSTNAME=github.com (optional, used for GitHub Enterprise custom domains)
 CALLBACK_URL=https://url-to-app/auth/callback (locally: http://127.0.0.1:5000/auth/callback)
 REPOSITORIES=org/repo,org/repo...
 ```
