@@ -29,7 +29,9 @@ var TreeNode = function(attrs) {
   }
 };
 
-var tree = function(milestones) {
+var tree = function(milestones, githubHostname) {
+  var githubUrl = "https://" + githubHostname;
+
   var nodes = milestones.map(function(m) {
     return new TreeNode(m);
   });
@@ -82,9 +84,10 @@ var tree = function(milestones) {
           title: node.title,
           slug: node.slug,
           root: (node.dependencies.length === 0),
-          url: "http://github.com/" + node.organisation + "/" + node.repository + "/issues?milestone=" + node.number,
-          repoUrl: "http://github.com/" + node.organisation + "/" + node.repository,
-          editLink: "http://github.com/" + node.organisation + "/" + node.repository + "/milestones/" + node.number + "/edit",
+          url: githubUrl + "/" + node.organisation + "/" + node.repository + "/issues?milestone=" + node.number,
+          repoUrl: githubUrl + "/" + node.organisation + "/" + node.repository,
+          editLink: githubUrl + "/" + node.organisation + "/" + node.repository
+                                                + "/milestones/" + node.number + "/edit",
           organisation: node.organisation,
           repository: node.repository,
           openIssues: node.openIssues,
@@ -120,7 +123,7 @@ var tree = function(milestones) {
   };
 };
 
-var renderer = function(graphData) {
+var renderer = function(graphData, githubHostname) {
   var graph = new dagreD3.Digraph(),
     svg = d3.select("svg"),
     svgGroup = d3.select("svg g"),
@@ -169,7 +172,7 @@ var renderer = function(graphData) {
       node.assignees.forEach(function(assignee) {
         $("<li/>", {
           html: $("<a/>", {
-            href: "http://www.github.com/" + assignee.login,
+            href: "https://" + githubHostname + "/" + assignee.login,
             html: $("<img/>", {
               src: assignee.avatarUrl,
               title: assignee.login
@@ -202,7 +205,7 @@ var renderer = function(graphData) {
   }
 };
 
-var load = function(slug) {
+var load = function(slug, githubHostname) {
   var org = slug.split("/")[0];
   $("#milestones-spinner").show();
   $("#orgModal").modal("hide");
@@ -211,8 +214,8 @@ var load = function(slug) {
   $("#current-org").html("(" + slug + ")");
   $.getJSON("/milestones/" + slug).done(function(data) {
     $("svg").show();
-    var graphData = tree(data).toGraph();
-    renderer(graphData).render();
+    var graphData = tree(data, githubHostname).toGraph();
+    renderer(graphData, githubHostname).render();
     d3.selectAll(".milestone a").on("mousedown", function(){
       d3.event.stopPropagation();
     });
@@ -251,10 +254,12 @@ var selectOrg = function() {
   $(".modal-dialog").css("z-index", "1500");
 };
 
-$(document).ready(function() {
-  if($.cookie("slug")) {
-    load($.cookie("slug"));
-  } else {
-    selectOrg();
-  }
-});
+function initApp(githubHostname) {
+  $(document).ready(function() {
+    if($.cookie("slug")) {
+      load($.cookie("slug"), githubHostname);
+    } else {
+      selectOrg();
+    }
+  });
+}
