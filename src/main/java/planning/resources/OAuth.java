@@ -33,16 +33,18 @@ public class OAuth {
     private static final Set<String> states = new ConcurrentHashSet<>();
     private final String clientId;
     private final String clientSecret;
+    private String githubHostname;
 
-    public OAuth(final String clientId, final String clientSecret) {
+    public OAuth(final String clientId, final String clientSecret, final String githubHostname) {
         this.clientId = clientId;
         this.clientSecret = clientSecret;
+        this.githubHostname = githubHostname;
     }
 
     @GET
     public Response login() {
         final URI login = UriBuilder
-                .fromUri(URI.create("https://github.com/login/oauth/authorize"))
+                .fromUri(URI.create(githubApi("/login/oauth/authorize")))
                 .queryParam("client_id", this.clientId)
                 .queryParam("scope", "repo,read:org")
                 .queryParam("state", newState())
@@ -57,7 +59,7 @@ public class OAuth {
                              @Context final HttpServletRequest request) {
         assertState(state);
         final JsonNode root = Client.create()
-                .resource("https://github.com/login/oauth/access_token")
+                .resource(githubApi("/login/oauth/access_token"))
                 .queryParam("grant_type", "authorization_code")
                 .queryParam("code", code)
                 .queryParam("client_id", this.clientId)
@@ -66,6 +68,10 @@ public class OAuth {
                 .post(JsonNode.class);
         request.getSession().setAttribute("token", checkNotNull(emptyToNull(root.get("access_token").asText())));
         return Response.temporaryRedirect(UriBuilder.fromResource(Milestones.class).build()).build();
+    }
+
+    private String githubApi(final String path) {
+        return "https://" + this.githubHostname + path;
     }
 
     private static String newState() {

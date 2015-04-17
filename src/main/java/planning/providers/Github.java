@@ -26,9 +26,14 @@ import com.sun.jersey.spi.inject.InjectableProvider;
 
 @Provider
 public class Github implements InjectableProvider<Auth, Parameter> {
+    private final String githubHostname;
 
     @Context
     private HttpServletRequest request;
+
+    public Github(final String githubHostname) {
+        this.githubHostname = githubHostname;
+    }
 
     @Override
     public ComponentScope getScope() {
@@ -40,7 +45,7 @@ public class Github implements InjectableProvider<Auth, Parameter> {
         return new GithubInjectable(this.request);
     }
 
-    private static final class GithubInjectable extends AbstractHttpContextInjectable<GitHubClient> {
+    private final class GithubInjectable extends AbstractHttpContextInjectable<GitHubClient> {
         private final HttpServletRequest request;
 
         public GithubInjectable(final HttpServletRequest request) {
@@ -51,7 +56,7 @@ public class Github implements InjectableProvider<Auth, Parameter> {
         public GitHubClient getValue(final HttpContext c) {
             final Optional<String> token = readToken(this.request.getSession(false));
             if(token.isPresent()) {
-                final GitHubClient client = new GitHubClient();
+                final GitHubClient client = new GitHubClient(Github.this.githubHostname);
                 client.setOAuth2Token(token.get());
                 return client;
             }
@@ -59,7 +64,7 @@ public class Github implements InjectableProvider<Auth, Parameter> {
             throw new WebApplicationException(Response.temporaryRedirect(login).build());
         }
 
-        private static Optional<String> readToken(final HttpSession session) {
+        private Optional<String> readToken(final HttpSession session) {
             return (session == null) ? Optional.absent() : Optional.fromNullable((String)session.getAttribute("token"));
         }
     }
