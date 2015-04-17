@@ -39,15 +39,17 @@ import com.google.common.collect.ImmutableMap;
 public class Milestones {
 
     private final List<String> repositories;
+    private final String githubHostname;
 
-    public Milestones(final List<String> repositories) {
+    public Milestones(final List<String> repositories, final String githubHostname) {
         this.repositories = repositories;
+        this.githubHostname = githubHostname;
     }
 
     @GET
     public View index(@Auth final GitHubClient client) throws IOException {
         final UserService users = new UserService(client);
-        return new IndexView(users.getUser(), this.repositories);
+        return new IndexView(users.getUser(), this.repositories, this.githubHostname);
     }
 
     @GET

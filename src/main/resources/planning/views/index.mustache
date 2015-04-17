@@ -49,7 +49,7 @@
           <div class="modal-body">
             <div class="list-group">
               {{#repositories}}
-                  <a href="#" onclick="load('{{.}}')" class="list-group-item organization">
+                  <a href="#" onclick="load('{{.}}', '{{githubHostname}}')" class="list-group-item organization">
                     <span>
                       {{.}}
                     </span>
@@ -66,5 +66,8 @@
     <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
     <script type="text/javascript" src="/assets/app.js"></script>
+    <script type="text/javascript">
+      initApp('{{githubHostname}}');
+    </script>
   </body>
 </html>

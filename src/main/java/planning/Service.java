@@ -33,7 +33,7 @@ public class Service extends Application<Configuration> {
         // FIXME: Doesn't scale to 1+ dynos
         final String githubHostname = optionalEnv("GITHUB_HOSTNAME").orElse("github.com");
         environment.servlets().setSessionHandler(new SessionHandler(new HashSessionManager()));
-        environment.jersey().register(new Milestones(asList(env("REPOSITORIES").split(","))));
+        environment.jersey().register(new Milestones(asList(env("REPOSITORIES").split(",")), githubHostname));
         environment.jersey().register(new OAuth(env("GITHUB_CLIENT_ID"), env("GITHUB_CLIENT_SECRET"), githubHostname));
         environment.jersey().register(new Github(githubHostname));
         environment.jersey().register(GithubExceptionMapper.class);
