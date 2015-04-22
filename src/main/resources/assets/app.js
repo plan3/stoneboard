@@ -123,18 +123,20 @@ var tree = function(milestones, githubHostname) {
   };
 };
 
+function setGraphDimension() {
+  var svg = d3.select("svg");
+  svg.attr({
+    "width": "100%",
+    "height": Math.max(svg.node().getBBox().height + 100, window.innerHeight - 80)
+  });
+}
+
 var renderer = function(graphData, githubHostname) {
   var graph = new dagreD3.Digraph(),
     svg = d3.select("svg"),
     svgGroup = d3.select("svg g"),
     nodeSeparation = 10;
 
-  function setGraphDimension() {
-    svg.attr({
-      "width": "100%",
-      "height": window.innerHeight - 80
-    });
-  }
 
   function addNodes() {
     graphData.nodes.forEach(function(node) {
@@ -197,10 +199,10 @@ var renderer = function(graphData, githubHostname) {
         layout = dagreD3.layout()
           .nodeSep(nodeSeparation)
           .rankDir("LR");
-      setGraphDimension();
       addNodes();
       addLinks();
       graphRenderer.layout(layout).run(graph, svgGroup);
+      setGraphDimension();
     }
   }
 };
@@ -263,3 +265,5 @@ function initApp(githubHostname) {
     }
   });
 }
+
+window.onresize = setGraphDimension;
