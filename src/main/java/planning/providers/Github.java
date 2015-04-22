@@ -1,6 +1,7 @@
 package planning.providers;
 
 import io.dropwizard.auth.Auth;
+import org.eclipse.egit.github.core.client.IGitHubConstants;
 import planning.resources.OAuth;
 
 import java.net.URI;
@@ -55,8 +56,12 @@ public class Github implements InjectableProvider<Auth, Parameter> {
         @Override
         public GitHubClient getValue(final HttpContext c) {
             final Optional<String> token = readToken(this.request.getSession(false));
+            String prefix = "";
             if(token.isPresent()) {
-                final GitHubClient client = new GitHubClient(Github.this.githubHostname);
+                if(IGitHubConstants.HOST_DEFAULT.equals(Github.this.githubHostname)) {
+                    prefix = "api.";
+                }
+                final GitHubClient client = new GitHubClient(prefix + Github.this.githubHostname);
                 client.setOAuth2Token(token.get());
                 return client;
             }
