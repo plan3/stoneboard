@@ -56,12 +56,8 @@ public class Github implements InjectableProvider<Auth, Parameter> {
         @Override
         public GitHubClient getValue(final HttpContext c) {
             final Optional<String> token = readToken(this.request.getSession(false));
-            String prefix = "";
             if(token.isPresent()) {
-                if(IGitHubConstants.HOST_DEFAULT.equals(Github.this.githubHostname)) {
-                    prefix = "api.";
-                }
-                final GitHubClient client = new GitHubClient(prefix + Github.this.githubHostname);
+                final GitHubClient client = new GitHubClient(IGitHubConstants.HOST_DEFAULT.equals(Github.this.githubHostname) ? "api.": "" + Github.this.githubHostname);
                 client.setOAuth2Token(token.get());
                 return client;
             }
