@@ -5,6 +5,7 @@ import static java.util.Collections.synchronizedSet;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.TEXT_HTML;
 
+import com.google.common.base.Strings;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.views.View;
 import planning.views.IndexView;
@@ -94,7 +95,7 @@ public class Milestones {
                 .put("number", milestone.getNumber())
                 .put("openIssues", milestone.getOpenIssues())
                 .put("closedIssues", milestone.getClosedIssues())
-                .put("description", milestone.getDescription())
+                .put("description", Strings.nullToEmpty(milestone.getDescription()))
                 .put("slug", String.format("%s/%s/%d", org, repo, milestone.getNumber()))
                 .put("assignees", Optional.ofNullable(assignees.get(milestone.getNumber())).orElse(emptySet()))
                 .build();
