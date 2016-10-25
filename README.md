@@ -10,6 +10,10 @@ This tells us the milestone has two dependencies; milestone 2 and 3 in the repo 
 
 ![example](stoneboard-example.png)
 
+## Rationale
+
+The underlying reasoning behind this style of task visualisation and planning is partly described in the presentation _"[Bastardised Kanban](https://speakerdeck.com/chids/bastardised-kanban)"_ from 2015.
+
 ## Local development
 
 ### Prerequisites
