@@ -155,11 +155,6 @@ var renderer = function(graphData, githubHostname) {
       href: node.url,
       html: node.title
     }).appendTo(outer);
-    $("<a/>", {
-      href: node.editLink,
-      html: "✍",
-      class: "edit"
-    }).appendTo(outer);
     $("<br/>").appendTo(outer);
     $("<span/>", {
       html: $("<a/>", {
