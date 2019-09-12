@@ -133,10 +133,7 @@ function setGraphDimension() {
 
 var renderer = function(graphData, githubHostname) {
   var graph = new dagreD3.Digraph(),
-    svg = d3.select("svg"),
-    svgGroup = d3.select("svg g"),
-    nodeSeparation = 10;
-
+    svgGroup = d3.select("svg g");
 
   function addNodes() {
     graphData.nodes.forEach(function(node) {
@@ -192,7 +189,7 @@ var renderer = function(graphData, githubHostname) {
     render: function() {
       var graphRenderer = new dagreD3.Renderer(),
         layout = dagreD3.layout()
-          .nodeSep(nodeSeparation)
+          .nodeSep(50)
           .rankDir("LR");
       addNodes();
       addLinks();
