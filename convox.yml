@@ -1,0 +1,8 @@
+services:
+  web:
+    build: .
+    domain: "${HOST}"
+    environment:
+      - "*"
+    health: /
+    port: 5000
