@@ -199,14 +199,10 @@ var renderer = function(graphData, githubHostname) {
   }
 };
 
-var load = function(slug, githubHostname) {
-  var org = slug.split("/")[0];
+var load = function(githubHostname) {
   $("#milestones-spinner").show();
-  $("#orgModal").modal("hide");
   $("svg").hide();
-  $.cookie("slug", slug);
-  $("#current-org").html("(" + slug + ")");
-  $.getJSON("/milestones/" + slug).done(function(data) {
+  $.getJSON("/milestones/").done(function(data) {
     $("svg").show();
     var graphData = tree(data, githubHostname).toGraph();
     renderer(graphData, githubHostname).render();
@@ -243,18 +239,9 @@ var load = function(slug, githubHostname) {
   });
 };
 
-var selectOrg = function() {
-  $("#orgModal").modal("show");
-  $(".modal-dialog").css("z-index", "1500");
-};
-
 function initApp(githubHostname) {
   $(document).ready(function() {
-    if($.cookie("slug")) {
-      load($.cookie("slug"), githubHostname);
-    } else {
-      selectOrg();
-    }
+    load(githubHostname);
   });
 }
 

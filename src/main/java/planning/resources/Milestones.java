@@ -5,7 +5,6 @@ import static java.util.Collections.synchronizedSet;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.TEXT_HTML;
 
-import com.google.common.base.Strings;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.views.View;
 import planning.views.IndexView;
@@ -23,7 +22,6 @@ import java.util.stream.Collectors;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import org.eclipse.egit.github.core.Milestone;
@@ -33,6 +31,7 @@ import org.eclipse.egit.github.core.service.IssueService;
 import org.eclipse.egit.github.core.service.MilestoneService;
 import org.eclipse.egit.github.core.service.UserService;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 
 @Path("/")
@@ -54,32 +53,44 @@ public class Milestones {
     }
 
     @GET
-    @Path("milestones/{org}/{repo}")
+    @Path("milestones")
     @Produces(APPLICATION_JSON)
-    public List<Map<String, Object>> milestones(@Auth final GitHubClient client,
-                                                @PathParam("org") final String org,
-                                                @PathParam("repo") final String repo) throws IOException {
+    public List<Map<String, Object>> milestones(@Auth final GitHubClient client) {
+        final IssueService issueService = new IssueService(client);
         final ConcurrentMap<Integer, Set<Map<String, String>>> assignees = new ConcurrentHashMap<>();
-        new IssueService(client)
-                .getIssues(org, repo, ImmutableMap.of("milestone", "*", "state", "open"))
-                .parallelStream()
-                .forEach((issue) -> {
-                    final User assignee = issue.getAssignee();
-                    if(assignee != null) {
-                        final int milestone = issue.getMilestone().getNumber();
-                        assignees.putIfAbsent(milestone, synchronizedSet(new HashSet<>()));
-                        // User doesn't implement equals/hashCode because a Set<User> had been too simple...
-                        assignees.get(milestone).add(ImmutableMap.of(
-                                "url", assignee.getUrl(),
-                                "avatarUrl", assignee.getAvatarUrl(),
-                                "login", assignee.getLogin()));
-                    }
-                });
-        return new MilestoneService(client)
-                .getMilestones(org, repo, "open")
-                .parallelStream()
-                .map(milestone -> merge(milestone, org, repo, assignees))
-                .collect(Collectors.toList());
+        this.repositories.stream().parallel().forEach(slug -> {
+            try {
+                final String[] slugSplit = slug.split("/");
+                issueService.getIssues(slugSplit[0], slugSplit[1], ImmutableMap.of("milestone", "*", "state", "open"))
+                        .parallelStream()
+                        .forEach((issue) -> {
+                            final User assignee = issue.getAssignee();
+                            if(assignee != null) {
+                                final int milestone = issue.getMilestone().getNumber();
+                                assignees.putIfAbsent(milestone, synchronizedSet(new HashSet<>()));
+                                // User doesn't implement equals/hashCode because a Set<User> had been too simple...
+                                assignees.get(milestone).add(ImmutableMap.of(
+                                        "url", assignee.getUrl(),
+                                        "avatarUrl", assignee.getAvatarUrl(),
+                                        "login", assignee.getLogin()));
+                            }
+                        });
+            } catch(final IOException e) {
+                throw new RuntimeException(e);
+            }
+
+        });
+        final MilestoneService milestoneService = new MilestoneService(client);
+        return this.repositories.stream().parallel().map(slug -> {
+            try {
+                final String[] slugSplit = slug.split("/");
+                return milestoneService.getMilestones(slugSplit[0], slugSplit[1], "open")
+                        .parallelStream().map(milestone -> merge(milestone, slugSplit[0], slugSplit[1], assignees))
+                        .collect(Collectors.toList());
+            } catch(final IOException e) {
+                throw new RuntimeException(e);
+            }
+        }).flatMap(List::stream).collect(Collectors.toList());
     }
 
     private static Map<String, Object> merge(final Milestone milestone,
