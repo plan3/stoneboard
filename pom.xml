@@ -10,9 +10,6 @@
     <service.mainClass>planning.Service</service.mainClass>
     <java.version>1.8</java.version>
     <dropwizard.version>0.7.0</dropwizard.version>
-    <amazon.version>1.7.11</amazon.version>
-    <json-path.version>0.9.0</json-path.version>
-    <jedis.version>2.2.1</jedis.version>
   </properties>
   <dependencies>
     <dependency>
