@@ -1,109 +1,126 @@
 package planning.resources;
 
-import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableMap;
-import io.dropwizard.auth.Auth;
-import io.dropwizard.views.View;
-import org.eclipse.egit.github.core.Milestone;
-import org.eclipse.egit.github.core.User;
-import org.eclipse.egit.github.core.client.GitHubClient;
-import org.eclipse.egit.github.core.service.IssueService;
-import org.eclipse.egit.github.core.service.MilestoneService;
-import org.eclipse.egit.github.core.service.UserService;
-import planning.views.IndexView;
+import org.kohsuke.github.GHIssue;
+import org.kohsuke.github.GHIssueState;
+import org.kohsuke.github.GHMilestone;
+import org.kohsuke.github.GHRepository;
+import org.kohsuke.github.GitHub;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
+import planning.ServiceConfig;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
 import java.io.IOException;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.Objects;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
-import static java.util.Collections.emptySet;
-import static java.util.Collections.synchronizedSet;
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static javax.ws.rs.core.MediaType.TEXT_HTML;
+import static java.util.Map.entry;
+import static java.util.Map.ofEntries;
 
-@Path("/")
-@Produces(TEXT_HTML)
+@RestController
 public class Milestones {
 
   private final List<String> repositories;
-  private final String githubHostname;
+  private final String hostname;
+  @Autowired private OAuth2AuthorizedClientService service;
 
-  public Milestones(final List<String> repositories, final String githubHostname) {
-    this.repositories = repositories;
-    this.githubHostname = githubHostname;
+  @Autowired
+  public Milestones(final ServiceConfig config) throws IOException {
+    this(config.repositories(), config.hostname());
   }
 
-  private static Map<String, Object> merge(
-      final Milestone milestone,
+  public Milestones(final List<String> repositories, final String hostname) throws IOException {
+    this.repositories = repositories;
+    this.hostname = hostname;
+  }
+
+  private GitHub ghClient(final String hostname) throws IOException {
+    // Pry out the client ID and setup a Github API client with it
+    final var oauthToken =
+        (OAuth2AuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+    final var client =
+        service.loadAuthorizedClient(
+            oauthToken.getAuthorizedClientRegistrationId(), oauthToken.getName());
+    return GitHub.connectUsingOAuth(hostname, client.getAccessToken().getTokenValue());
+  }
+
+  @GetMapping("/")
+  public ModelAndView index(@AuthenticationPrincipal OAuth2User principal) {
+    return new ModelAndView(
+        "index",
+        Map.of(
+            "githubHostname",
+            this.hostname,
+            "repositories",
+            this.repositories,
+            "user",
+            Map.of(
+                "login",
+                principal.getAttribute("login"),
+                "avatarUrl",
+                principal.getAttribute("avatar_url"))));
+  }
+
+  @GetMapping("milestones/{org}/{repo}")
+  public List<Map<String, Object>> milestones(
+      @PathVariable("org") final String org, @PathVariable("repo") final String repo)
+      throws IOException {
+    final var result = new ArrayList<Map<String, Object>>();
+    final var repository = ghClient(hostname).getRepository(String.format("%s/%s", org, repo));
+    for (final GHMilestone milestone : repository.listMilestones(GHIssueState.OPEN)) {
+      final var participants = participants(repository, milestone);
+      result.add(milestone(org, repo, milestone, participants));
+    }
+    return result;
+  }
+
+  private List<Map<String, String>> participants(
+      final GHRepository repository, final GHMilestone milestone) throws IOException {
+    return repository
+        .getIssues(GHIssueState.ALL, milestone)
+        .parallelStream()
+        .map(GHIssue::getAssignees)
+        .flatMap(List::stream)
+        .distinct()
+        .map(
+            u ->
+                Map.of(
+                    "url",
+                    u.getUrl().toString(),
+                    "avatarUrl",
+                    u.getAvatarUrl(),
+                    "login",
+                    u.getLogin()))
+        .collect(Collectors.toList());
+  }
+
+  private Map<String, Object> milestone(
       final String org,
       final String repo,
-      final Map<Integer, Set<Map<String, String>>> assignees) {
-    return ImmutableMap.<String, Object>builder()
-        .put("organisation", org)
-        .put("repository", repo)
-        .put("id", UUID.randomUUID().toString())
-        .put("url", milestone.getUrl())
-        .put("title", milestone.getTitle())
-        .put("number", milestone.getNumber())
-        .put("openIssues", milestone.getOpenIssues())
-        .put("closedIssues", milestone.getClosedIssues())
-        .put("description", Strings.nullToEmpty(milestone.getDescription()))
-        .put("slug", String.format("%s/%s/%d", org, repo, milestone.getNumber()))
-        .put(
-            "assignees",
-            Optional.ofNullable(assignees.get(milestone.getNumber())).orElse(emptySet()))
-        .build();
-  }
-
-  @GET
-  public View index(@Auth final GitHubClient client) throws IOException {
-    final UserService users = new UserService(client);
-    return new IndexView(users.getUser(), this.repositories, this.githubHostname);
-  }
-
-  @GET
-  @Path("milestones/{org}/{repo}")
-  @Produces(APPLICATION_JSON)
-  public List<Map<String, Object>> milestones(
-      @Auth final GitHubClient client,
-      @PathParam("org") final String org,
-      @PathParam("repo") final String repo)
-      throws IOException {
-    final ConcurrentMap<Integer, Set<Map<String, String>>> assignees = new ConcurrentHashMap<>();
-    new IssueService(client)
-        .getIssues(org, repo, ImmutableMap.of("milestone", "*", "state", "open"))
-        .parallelStream()
-        .forEach(
-            (issue) -> {
-              final User assignee = issue.getAssignee();
-              if (assignee != null) {
-                final int milestone = issue.getMilestone().getNumber();
-                assignees.putIfAbsent(milestone, synchronizedSet(new HashSet<>()));
-                // User doesn't implement equals/hashCode because a Set<User> had been too simple...
-                assignees
-                    .get(milestone)
-                    .add(
-                        ImmutableMap.of(
-                            "url", assignee.getUrl(),
-                            "avatarUrl", assignee.getAvatarUrl(),
-                            "login", assignee.getLogin()));
-              }
-            });
-    return new MilestoneService(client)
-        .getMilestones(org, repo, "open")
-        .parallelStream()
-        .map(milestone -> merge(milestone, org, repo, assignees))
-        .collect(Collectors.toList());
+      final GHMilestone milestone,
+      final List<Map<String, String>> participants) {
+    return ofEntries(
+        entry("organisation", org),
+        entry("repository", repo),
+        entry("id", UUID.randomUUID().toString()),
+        entry("url", milestone.getUrl().toString()),
+        entry("title", milestone.getTitle()),
+        entry("number", milestone.getNumber()),
+        entry("openIssues", milestone.getOpenIssues()),
+        entry("closedIssues", milestone.getClosedIssues()),
+        entry("description", Objects.toString(milestone.getDescription(), "")),
+        entry("slug", String.format("%s/%s/%d", org, repo, milestone.getNumber())),
+        entry("assignees", participants));
   }
 }

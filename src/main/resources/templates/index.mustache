@@ -6,9 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Milestones</title>
     <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.0/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="/assets/spinner.css">
-    <link rel="stylesheet" type="text/css" href="/assets/nodes.css">
-    <link rel="stylesheet" type="text/css" href="/assets/style.css">
+    <link rel="stylesheet" type="text/css" href="/spinner.css">
+    <link rel="stylesheet" type="text/css" href="/nodes.css">
+    <link rel="stylesheet" type="text/css" href="/style.css">
   </head>
   <body>
     <div class="container-fluid">
@@ -20,7 +20,7 @@
           <p class="navbar-text navbar-right">
             <a href="#" onclick="selectOrg()">Select organization</a>
             <span id="current-org"></span>
-            <a href="https://github.com/{{user.login}}" target="_blank">
+            <a href="https://{{githubHostname}}/{{user.login}}" target="_blank">
               <img src="{{user.avatarUrl}}" height="30">
             </a>
           </p>
@@ -65,7 +65,7 @@
     <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
-    <script type="text/javascript" src="/assets/app.js"></script>
+    <script type="text/javascript" src="/app.js"></script>
     <script type="text/javascript">
       initApp('{{githubHostname}}');
     </script>

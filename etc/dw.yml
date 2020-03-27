@@ -1,4 +1,0 @@
-server:
-  type: simple
-  applicationContextPath: /
-  adminContextPath: /admin

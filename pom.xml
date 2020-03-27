@@ -5,50 +5,36 @@
   <groupId>plan3</groupId>
   <artifactId>planning</artifactId>
   <version>1.0-SNAPSHOT</version>
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.2.6.RELEASE</version>
+    <relativePath/> <!-- lookup parent from repository -->
+  </parent>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <service.mainClass>planning.Service</service.mainClass>
     <java.version>11</java.version>
-    <dropwizard.version>0.7.0</dropwizard.version>
+    <github_api.version>1.108</github_api.version>
+    <spring.boot.version>2.2.6.RELEASE</spring.boot.version>
   </properties>
   <dependencies>
     <dependency>
-      <groupId>org.eclipse.mylyn.github</groupId>
-      <artifactId>org.eclipse.egit.github.core</artifactId>
-      <version>2.1.5</version>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.dropwizard</groupId>
-      <artifactId>dropwizard-client</artifactId>
-      <version>${dropwizard.version}</version>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-mustache</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.dropwizard</groupId>
-      <artifactId>dropwizard-auth</artifactId>
-      <version>${dropwizard.version}</version>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-oauth2-client</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.dropwizard</groupId>
-      <artifactId>dropwizard-views-mustache</artifactId>
-      <version>${dropwizard.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.dropwizard</groupId>
-      <artifactId>dropwizard-assets</artifactId>
-      <version>${dropwizard.version}</version>
-    </dependency>
-    <!-- Test dep's -->
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.11</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-all</artifactId>
-      <version>1.9.5</version>
-      <scope>test</scope>
+      <groupId>org.kohsuke</groupId>
+      <artifactId>github-api</artifactId>
+      <version>${github_api.version}</version>
     </dependency>
   </dependencies>
   <build>
@@ -64,55 +50,8 @@
         </configuration>
       </plugin>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>3.2.2</version>
-        <configuration>
-          <createDependencyReducedPom>true</createDependencyReducedPom>
-          <filters>
-            <filter>
-              <artifact>*:*</artifact>
-              <excludes>
-                <exclude>META-INF/*.SF</exclude>
-                <exclude>META-INF/*.DSA</exclude>
-                <exclude>META-INF/*.RSA</exclude>
-              </excludes>
-            </filter>
-          </filters>
-        </configuration>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <transformers>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                  <mainClass>${service.mainClass}</mainClass>
-                </transformer>
-              </transformers>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <version>1.4.1</version>
-        <executions>
-          <execution>
-            <id>enforce</id>
-            <configuration>
-              <rules>
-                <DependencyConvergence/>
-              </rules>
-            </configuration>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-          </execution>
-        </executions>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </build>
