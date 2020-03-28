@@ -10,6 +10,17 @@ This tells us the milestone has two dependencies; milestone 2 and 3 in the repo 
 
 ![example](stoneboard-example.png)
 
+## F#!k it, :squirrel: it
+
+<a href="https://heroku.com/deploy"><img src="https://www.herokucdn.com/deploy/button.svg" alt="Deploy to Heroku"></a>
+<br/>
+<a href="https://deploy.cloud.run"><img src="https://deploy.cloud.run/button.svg" width="20%" height="auto" alt="Deploy to Google Cloud Run"></a>
+
+There are two demo instances available, one on [Heroku](https://stoneboard.herokuapp.com/) and one on [Google Cloud Run](https://stoneboard-jh667k4lfa-lz.a.run.app/).
+Both are configured to render the milestones and issues from this repository and where deployed using the above buttons.
+
+# About
+
 ## Rationale
 
 The underlying reasoning behind this style of task visualisation and planning is partly described in the presentation _"[Bastardised Kanban](https://speakerdeck.com/chids/bastardised-kanban)"_ from 2015.
