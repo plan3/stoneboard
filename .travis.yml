@@ -4,7 +4,7 @@ branches:
   only:
     - master
 jdk:
-  - oraclejdk8
+  - openjdk11
 script:
   - mvn verify
 install: echo "We believe in Maven."

@@ -8,6 +8,7 @@ import org.kohsuke.github.GitHub;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -47,11 +48,9 @@ public class Milestones {
 
   private GitHub ghClient(final String hostname) throws IOException {
     // Pry out the client ID and setup a Github API client with it
-    final var oauthToken =
-        (OAuth2AuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-    final var client =
-        service.loadAuthorizedClient(
-            oauthToken.getAuthorizedClientRegistrationId(), oauthToken.getName());
+    final OAuth2AuthenticationToken token = (OAuth2AuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+    final OAuth2AuthorizedClient client = service.loadAuthorizedClient(
+      token.getAuthorizedClientRegistrationId(), token.getName());
     return GitHub.connectUsingOAuth(hostname, client.getAccessToken().getTokenValue());
   }
 
@@ -76,10 +75,10 @@ public class Milestones {
   public List<Map<String, Object>> milestones(
       @PathVariable("org") final String org, @PathVariable("repo") final String repo)
       throws IOException {
-    final var result = new ArrayList<Map<String, Object>>();
-    final var repository = ghClient(hostname).getRepository(String.format("%s/%s", org, repo));
+    final ArrayList<Map<String, Object>> result = new ArrayList<>();
+    final GHRepository repository = ghClient(hostname).getRepository(String.format("%s/%s", org, repo));
     for (final GHMilestone milestone : repository.listMilestones(GHIssueState.OPEN)) {
-      final var participants = participants(repository, milestone);
+      final List<Map<String, String>> participants = participants(repository, milestone);
       result.add(milestone(org, repo, milestone, participants));
     }
     return result;
