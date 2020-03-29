@@ -17,7 +17,7 @@
     <service.mainClass>planning.Service</service.mainClass>
     <github_api.version>1.108</github_api.version>
     <spring.boot.version>2.2.6.RELEASE</spring.boot.version>
-    <java.version>1.9</java.version>
+    <java.version>1.8</java.version>
   </properties>
   <dependencies>
     <dependency>
