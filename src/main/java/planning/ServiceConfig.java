@@ -10,12 +10,13 @@ import static java.util.Objects.requireNonNull;
 
 @Configuration
 public class ServiceConfig {
-  private static final String DEFAULT_HOST = "github.com";
+  public static final String HOSTNAME_ENV = "GITHUB_HOSTNAME";
+  public static final String DEFAULT_HOST = "github.com";
 
   @Value("${REPOSITORIES}")
   private String repositories;
 
-  @Value("${GITHUB_HOSTNAME:" + DEFAULT_HOST + '}')
+  @Value("${" + HOSTNAME_ENV + ":" + DEFAULT_HOST + '}')
   private String hostname;
 
   public String hostname() {
