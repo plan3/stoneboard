@@ -1,0 +1,24 @@
+{
+  "name": "Stoneboard",
+  "description": "Visualises Github milestones as a directed graph, columnless Kanban if you will.",
+  "repository": "https://github.com/plan3/stoneboard",
+  "keywords": ["java", "github", "planning", "kanban"],
+  "env": {
+    "REPOSITORIES": {
+      "description": "A list of repositories, i.e. 'org/repo,org/repo,...', to render milestones for.",
+      "required": true
+    },
+    "GITHUB_CLIENT_ID": {
+      "description": "The client ID for your Github OAuth application.",
+      "required": true
+    },
+    "GITHUB_CLIENT_SECRET": {
+      "description": "The client secret for your Github OAuth application.",
+      "required": true
+    },
+    "GITHUB_HOSTNAME": {
+      "description": "Optional, customized Github hostname for Github Enterprise installations.",
+      "required": false
+    }
+  }
+}

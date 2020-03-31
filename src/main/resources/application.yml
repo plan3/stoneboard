@@ -1,0 +1,33 @@
+server:
+  # Fix OAuth redirect on Google Cloud Run
+  # See: https://github.com/spring-projects/spring-security/issues/5631
+  # And: https://github.com/spring-projects/spring-boot/issues/5677
+  # Fix: https://github.com/spring-projects/spring-boot/commit/959e161555a147cac812915b1677abb46e3a860b
+  port: ${PORT:8080}
+  forwardHeadersStrategy: FRAMEWORK
+---
+spring:
+  profiles: githubCom
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            clientId: ${GITHUB_CLIENT_ID}
+            clientSecret: ${GITHUB_CLIENT_SECRET}
+---
+spring:
+  profiles: githubEnterprise
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            provider: github
+            clientId: ${GITHUB_CLIENT_ID}
+            clientSecret: ${GITHUB_CLIENT_SECRET}
+        provider:
+          github:
+            authorization-uri: https://${GITHUB_HOSTNAME}/login/oauth/authorize
+            token-uri: https://${GITHUB_HOSTNAME}/login/oauth/access_token
+            user-info-uri: https://${GITHUB_HOSTNAME}/api/v3/user

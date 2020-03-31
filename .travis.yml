@@ -2,12 +2,12 @@ sudo: false
 language: java
 branches:
   only:
-  - master
+    - master
 jdk:
-- oraclejdk8
+  - openjdk11
 script:
-- mvn verify
+  - mvn verify
 install: echo "We believe in Maven."
 cache:
   directories:
-  - $HOME/.m2
+    - $HOME/.m2
