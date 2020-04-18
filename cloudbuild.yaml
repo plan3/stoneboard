@@ -1,0 +1,23 @@
+substitutions:
+  _SERVICE: stoneboard
+steps:
+  - name: gcr.io/cloud-builders/mvn
+    entrypoint: 'mvn'
+    args: ['verify']
+  - name: gcr.io/cloud-builders/mvn
+    args:
+      - 'jib:build'
+      - '-Djib.to.image=gcr.io/${PROJECT_ID}/${_SERVICE}'
+      - '-Djib.to.image.tags=latest'
+  - name: gcr.io/cloud-builders/gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - '${_SERVICE}'
+      - '--image'
+      - 'gcr.io/${PROJECT_ID}/${_SERVICE}'
+      - '--region'
+      - 'europe-north1'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
