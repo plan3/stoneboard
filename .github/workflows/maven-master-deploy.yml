@@ -21,3 +21,7 @@ jobs:
         run: mvn compile jib:build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Purge oldest image
+        uses: actions/delete-package-versions@v1
+        with:
+          package-name: 'stoneboard'
