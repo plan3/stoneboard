@@ -5,8 +5,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.support.GenericApplicationContext;
 
-import static planning.ServiceConfig.DEFAULT_HOST;
-import static planning.ServiceConfig.HOSTNAME_ENV;
+import static planning.ServiceConfig.GITHUB_COM_HOST;
+import static planning.ServiceConfig.ENV_GITHUB_HOSTNAME;
 
 @SpringBootApplication
 public class Service {
@@ -24,7 +24,7 @@ public class Service {
   }
 
   private static boolean isGithubCom() {
-    final String host = System.getenv(HOSTNAME_ENV);
-    return host == null || host.isEmpty() || DEFAULT_HOST.equals(host);
+    final String host = System.getenv(ENV_GITHUB_HOSTNAME);
+    return host == null || host.isEmpty() || GITHUB_COM_HOST.equals(host);
   }
 }
