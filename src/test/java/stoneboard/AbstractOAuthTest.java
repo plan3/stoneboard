@@ -1,12 +1,12 @@
-package planning;
+package stoneboard;
 
 import static java.util.Arrays.asList;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
-import static planning.ServiceConfig.ENV_GITHUB_CLIENT_ID;
-import static planning.ServiceConfig.ENV_GITHUB_CLIENT_SECRET;
-import static planning.ServiceConfig.ENV_GITHUB_HOSTNAME;
-import static planning.ServiceConfig.ENV_REPOSITORIES;
+import static stoneboard.ServiceConfig.ENV_GITHUB_CLIENT_ID;
+import static stoneboard.ServiceConfig.ENV_GITHUB_CLIENT_SECRET;
+import static stoneboard.ServiceConfig.ENV_GITHUB_HOSTNAME;
+import static stoneboard.ServiceConfig.ENV_REPOSITORIES;
 
 import java.util.HashMap;
 import java.util.List;

@@ -14,7 +14,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <service.mainClass>planning.Service</service.mainClass>
+    <service.mainClass>stoneboard.Service</service.mainClass>
     <github_api.version>1.111</github_api.version>
     <java.version>1.8</java.version>
   </properties>
