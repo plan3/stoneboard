@@ -16,8 +16,10 @@ This tells us the milestone has two dependencies; milestone 2 and 3 in the repo 
 <br/>
 <a href="https://deploy.cloud.run"><img src="https://deploy.cloud.run/button.svg" width="20%" height="auto" alt="Deploy to Google Cloud Run"></a>
 
+### Demo
+
 There are two demo instances available, one on [Heroku](https://stoneboard.herokuapp.com/) and one on [Google Cloud Run](https://stoneboard-jh667k4lfa-lz.a.run.app/).
-Both are configured to render the milestones and issues from this repository and where deployed using the above buttons.
+Both are configured to render the milestones and issues from this repository.
 
 # About
 
@@ -29,7 +31,7 @@ The underlying reasoning behind this style of task visualisation and planning is
 
 ### Prerequisites
 
-You will need Java 11 and Maven 3 installed and "properly" setup (in your path etc).
+You will need Java 8 and Maven 3 installed and "properly" setup (in your path etc).
 
 ### Setup
 
