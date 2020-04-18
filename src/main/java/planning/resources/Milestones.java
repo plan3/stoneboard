@@ -1,5 +1,15 @@
 package planning.resources;
 
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 import org.kohsuke.github.GHIssue;
 import org.kohsuke.github.GHIssueState;
 import org.kohsuke.github.GHMilestone;
@@ -16,22 +26,21 @@ import org.springframework.web.servlet.ModelAndView;
 import planning.GithubClientFactory;
 import planning.ServiceConfig;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
-
-import static java.util.stream.Collectors.toList;
-
 @RestController
 public class Milestones {
 
-  @Autowired private OAuth2AuthorizedClientService service;
-  @Autowired private GithubClientFactory factory;
-  @Autowired private ServiceConfig config;
+  private final GithubClientFactory factory;
+  private final ServiceConfig config;
+  private final OAuth2AuthorizedClientService service;
+
+  public Milestones(
+      @Autowired final GithubClientFactory factory,
+      @Autowired final ServiceConfig config,
+      @Autowired final OAuth2AuthorizedClientService service) {
+    this.factory = requireNonNull(factory);
+    this.config = requireNonNull(config);
+    this.service = requireNonNull(service);
+  }
 
   @GetMapping("/")
   public ModelAndView index(@AuthenticationPrincipal OAuth2User principal) {
