@@ -1,1 +1,1 @@
-web: java $JAVA_OPTS -jar target/planning.jar
+web: java $JAVA_OPTS -jar target/stoneboard.jar
