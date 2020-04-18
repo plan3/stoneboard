@@ -22,7 +22,7 @@ jobs:
       - name: Build and test
         run: mvn verify
       - name: Publish image
-        run: mvn jib:build -Djib.to.image=docker.pkg.github.com/${GITHUB_REPOSITORY}/${PACKAGE} -Djib.to.auth.username=${GITHUB_ACTOR} -Djib.to.auth.password=${GITHUB_TOKEN} -Djib.to.image.tags=latest -Djib.to.image.tags=${GITHUB_SHA}
+        run: mvn jib:build -Djib.to.image=docker.pkg.github.com/${GITHUB_REPOSITORY}/${PACKAGE} -Djib.to.auth.username=${GITHUB_ACTOR} -Djib.to.auth.password=${GITHUB_TOKEN} -Djib.to.image.tags=latest,${GITHUB_SHA}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Purge oldest image
