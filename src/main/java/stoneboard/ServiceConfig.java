@@ -1,4 +1,4 @@
-package planning;
+package stoneboard;
 
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;

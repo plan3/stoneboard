@@ -1,12 +1,12 @@
-package planning;
+package stoneboard;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.support.GenericApplicationContext;
 
-import static planning.ServiceConfig.GITHUB_COM_HOST;
-import static planning.ServiceConfig.ENV_GITHUB_HOSTNAME;
+import static stoneboard.ServiceConfig.GITHUB_COM_HOST;
+import static stoneboard.ServiceConfig.ENV_GITHUB_HOSTNAME;
 
 @SpringBootApplication
 public class Service {

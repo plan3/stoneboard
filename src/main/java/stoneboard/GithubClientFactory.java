@@ -1,4 +1,4 @@
-package planning;
+package stoneboard;
 
 import org.kohsuke.github.GitHub;
 import org.springframework.security.core.context.SecurityContextHolder;

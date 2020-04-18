@@ -1,4 +1,4 @@
-package planning;
+package stoneboard;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;

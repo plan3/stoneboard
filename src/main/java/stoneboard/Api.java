@@ -1,4 +1,4 @@
-package planning.resources;
+package stoneboard;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -23,17 +23,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-import planning.GithubClientFactory;
-import planning.ServiceConfig;
 
 @RestController
-public class Milestones {
+public class Api {
 
   private final GithubClientFactory factory;
   private final ServiceConfig config;
   private final OAuth2AuthorizedClientService service;
 
-  public Milestones(
+  public Api(
       @Autowired final GithubClientFactory factory,
       @Autowired final ServiceConfig config,
       @Autowired final OAuth2AuthorizedClientService service) {
@@ -55,8 +53,8 @@ public class Milestones {
         "index",
         new HashMap<String, Object>() {
           {
-            put("githubHostname", Milestones.this.config.hostname());
-            put("repositories", Milestones.this.config.repositories());
+            put("githubHostname", Api.this.config.hostname());
+            put("repositories", Api.this.config.repositories());
             put("user", user);
           }
         });
