@@ -1,4 +1,6 @@
 name: Build and deploy docker image
+env:
+  PACKAGE: stoneboard
 on:
   push:
     branches: [ master ]
@@ -17,11 +19,13 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
+      - name: Build and test
+        run: mvn verify
       - name: Publish image
-        run: mvn compile jib:build
+        run: mvn jib:build -Djib.to.image=docker.pkg.github.com/${GITHUB_REPOSITORY}/${PACKAGE} -Djib.to.auth.username=${GITHUB_ACTOR} -Djib.to.auth.password=${GITHUB_TOKEN} -Djib.to.image.tags=latest -Djib.to.image.tags=${GITHUB_SHA}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Purge oldest image
         uses: actions/delete-package-versions@v1
         with:
-          package-name: 'stoneboard'
+          package-name: ${{env.PACKAGE}}
