@@ -16,6 +16,8 @@ This tells us the milestone has two dependencies; milestone 2 and 3 in the repo 
 <br/>
 <a href="https://deploy.cloud.run"><img src="https://deploy.cloud.run/button.svg" width="20%" height="auto" alt="Deploy to Google Cloud Run"></a>
 
+Docker images are built from `master` and pushed to [Github Packages](https://github.com/plan3/stoneboard/packages/189650) and [Docker Hub](https://hub.docker.com/r/martengustafson/stoneboard).
+
 ### Demo
 
 There are two demo instances available, one on [Heroku](https://stoneboard.herokuapp.com/) and one on [Google Cloud Run](https://stoneboard-jh667k4lfa-lz.a.run.app/).
