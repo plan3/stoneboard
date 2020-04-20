@@ -21,7 +21,12 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
       - name: Build and test
         run: mvn verify
-      - name: Publish image
+      - name: Publish image to Github Package Registry
         run: mvn jib:build -Djib.to.image=docker.pkg.github.com/${GITHUB_REPOSITORY}/${PACKAGE} -Djib.to.auth.username=${GITHUB_ACTOR} -Djib.to.auth.password=${GITHUB_TOKEN} -Djib.to.image.tags=latest,${GITHUB_SHA}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish image to Docker Hub
+        run: mvn jib:build -Djib.to.image=docker.io/martengustafson/${PACKAGE} -Djib.to.auth.username=${DOCKER_HUB_USERNAME} -Djib.to.auth.password=${DOCKER_HUB_PASSWORD} -Djib.to.image.tags=latest,${GITHUB_SHA}
+        env:
+          DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+          DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
