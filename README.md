@@ -59,6 +59,7 @@ Config variables for local `.env` and Heroku app:
 ```
 GITHUB_CLIENT_ID=A-GITHUB-CLIENT-ID
 GITHUB_CLIENT_SECRET=A-GITHUB-CLIENT-SECRET
+GITHUB_CLIENT_SCOPES=user # set this to user,repo if you need to access private repositories
 GITHUB_HOSTNAME=github.com (optional, used for GitHub Enterprise custom domains)
 REPOSITORIES=org/repo,org/repo...
 ```
