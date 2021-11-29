@@ -13,6 +13,7 @@ spring:
       client:
         registration:
           github:
+            scope: ${GITHUB_CLIENT_SCOPES}
             clientId: ${GITHUB_CLIENT_ID}
             clientSecret: ${GITHUB_CLIENT_SECRET}
 ---
@@ -28,6 +29,7 @@ spring:
             clientSecret: ${GITHUB_CLIENT_SECRET}
         provider:
           github:
+            scope: ${GITHUB_CLIENT_SCOPES}
             authorization-uri: https://${GITHUB_HOSTNAME}/login/oauth/authorize
             token-uri: https://${GITHUB_HOSTNAME}/login/oauth/access_token
             user-info-uri: https://${GITHUB_HOSTNAME}/api/v3/user
